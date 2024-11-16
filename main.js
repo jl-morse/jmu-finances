@@ -22,16 +22,17 @@ const sankey = d3Sankey.sankey()
   .extent([[1, 5], [width - 1, height - 5]]);
 function comprehensiveFee(dataset) {
   done = [];
+  let i = 0;
   dataset.forEach(element => {
-    let i = 0;
     if (element.name == "Comprehensive Fee") {
-      i++;
       done.append({
         "i": i,
         "title": element.name,
         "value": element.amount
       })
+      i++;
     }
+    return done;
   });
 }
 function nodesFromJMU(dataset) {
