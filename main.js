@@ -68,7 +68,7 @@ function nodesFromJMU(dataset) {
 function linksFromJMU(nodes) {
   let links = [];
   nodes.forEach((node) => {
-    //nodes.forEach((targetNode, targetIndex) => {  
+    nodes.forEach((targetNode, targetIndex) => {  
       links.push({
           source: node.index,
           target: targetIndex,
