@@ -27,7 +27,7 @@ const sankey = d3Sankey.sankey()
   dataset.forEach(element => {
     if (element.name.includes("Comprehensive Fees")) {
       done.push({
-        "i": i,
+        "index": i,
         "title": element.name,
         "value": element["in-state"],
       })
@@ -43,7 +43,7 @@ function studentFee(dataset) {
   dataset.forEach(element => {
     if (element.type.includes("Auxiliary Comprehensive Fee Component")) {
       done.push({
-        "i": i,
+        "index": i,
         "title": element.name,
         "value": element.amount,
       })
@@ -67,7 +67,17 @@ function nodesFromJMU(dataset) {
 
 function linksFromJMU(nodes) {
   let links = [];
-  return links;
+  nodes.forEach((node) => {
+    //nodes.forEach((targetNode, targetIndex) => {  
+      links.push({
+          source: node.index,
+          target: targetIndex,
+          value: node.value
+        });
+        console.log(links);
+    });
+  });
+
 }
 function nodesLinksFromJMU(data) {
   // return and object with 2 keys: nodes and links
