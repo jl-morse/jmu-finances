@@ -34,7 +34,6 @@ const sankey = d3Sankey.sankey()
       i++;
     }
   });
-  console.log(done);
   return done;
 }
 function studentFee(dataset) {
@@ -50,7 +49,6 @@ function studentFee(dataset) {
       i++;
     }
   });
-  console.log(done);
   return done;
 }
 function nodesFromJMU(dataset) {
@@ -65,17 +63,18 @@ function nodesFromJMU(dataset) {
   ];
 }
 
-function linksFromJMU(nodes) {
+function linksFromJMU(dataset) {
+  const nodes = nodesFromJMU(dataset)
   let links = [];
-  nodes.forEach((node) => {
-    nodes.forEach((targetIndex) => {  
-      links.push({
-          source: node.index,
-          target: targetIndex,
-          value: node.value
-        });
-        console.log(links);
-    });
+  nodes[0].forEach((node) => {
+    nodes[-1].forEach((inode) => {
+    links.push({
+      "source": node.index,
+      "value": node.value,
+      "target": inode.index
+    })
+  });
+  return links;
   });
 
 }
@@ -86,11 +85,11 @@ function nodesLinksFromJMU(data) {
     nodes: nodesFromJMU(dataset),
     links: linksFromJMU(dataset)
   };
+  console.log(result);
   return result;
 }
 
 async function init() {
-  //const data = await d3.json("data/data_sankey.json");
   const dataJMU = await d3.json("data/jmu.json");
   const data = nodesLinksFromJMU(dataJMU);
   // Applies it to the data. We make a copy of the nodes and links objects
