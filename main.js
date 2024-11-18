@@ -20,20 +20,38 @@ const sankey = d3Sankey.sankey()
   .nodeWidth(15)
   .nodePadding(10)
   .extent([[1, 5], [width - 1, height - 5]]);
-function comprehensiveFee(dataset) {
-  done = [];
+
+  function comprehensiveFee(dataset) {
+  let done = [];
   let i = 0;
   dataset.forEach(element => {
-    if (element.name == "Comprehensive Fee") {
-      done.append({
+    if (element.name.includes("Comprehensive Fees")) {
+      done.push({
         "i": i,
         "title": element.name,
-        "value": element.amount
+        "value": element["in-state"],
       })
       i++;
     }
-    return done;
   });
+  console.log(done);
+  return done;
+}
+function studentFee(dataset) {
+  let done = [];
+  let i = 0;
+  dataset.forEach(element => {
+    if (element.type.includes("Auxiliary Comprehensive Fee Component")) {
+      done.push({
+        "i": i,
+        "title": element.name,
+        "value": element.amount,
+      })
+      i++;
+    }
+  });
+  console.log(done);
+  return done;
 }
 function nodesFromJMU(dataset) {
   //leftmost node: Auxiliary Comprehensive Fee (or "Comprehensive Fee")
@@ -41,27 +59,30 @@ function nodesFromJMU(dataset) {
 
   //rightmost nodes: the `Auxiliary Comprehensive Fee Component` costs from the `student-costs`
   const studentComprehensiveFee = studentFee(dataset) //returns an array
-
   return [
-    ...comprehensiveFee,
-    ...studentFee
+    ...jmuComprehensiveFee,
+    ...studentComprehensiveFee
   ];
 }
 
-
+function linksFromJMU(nodes) {
+  let links = [];
+  return links;
+}
 function nodesLinksFromJMU(data) {
   // return and object with 2 keys: nodes and links
   const dataset = data['student-costs'];
   const result = {
     nodes: nodesFromJMU(dataset),
-    links: LinksFromJMU(dataset)
-  }
+    links: linksFromJMU(dataset)
+  };
+  return result;
 }
 
 async function init() {
   //const data = await d3.json("data/data_sankey.json");
   const dataJMU = await d3.json("data/jmu.json");
-  const data = nodesLinksFromJMU(data);
+  const data = nodesLinksFromJMU(dataJMU);
   // Applies it to the data. We make a copy of the nodes and links objects
   // so as to avoid mutating the original.
   const { nodes, links } = sankey({
@@ -70,7 +91,7 @@ async function init() {
     links: data.links.map(d => Object.assign({}, d))
   });
 
-  // console.log('tmp', tmp);
+  //console.log('tmp', tmp);
   console.log('nodes', nodes);
   console.log('links', links);
 
