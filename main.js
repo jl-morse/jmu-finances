@@ -2,7 +2,7 @@ import * as d3 from 'd3';
 import * as d3Sankey from "d3-sankey";
 
 const width = 928;
-const height = 600;
+const height = 600*5;
 const format = d3.format(",.0f");
 const linkColor = "source-target"; // source, target, source-target, or a color string.
 
@@ -21,30 +21,30 @@ const sankey = d3Sankey.sankey()
   .nodePadding(10)
   .extent([[1, 5], [width - 1, height - 5]]);
 
+  
   function comprehensiveFee(dataset) {
   let done = [];
-  let i = 0;
-  dataset.forEach(element => {
-    if (element.name.includes("Comprehensive Fees")) {
+  console.log(dataset);
+  const node0 = dataset.find((element) => element.name == "Comprehensive Fees");
+    if (node0 != null) {
       done.push({
-        "index": i,
-        "title": element.name,
-        "value": element["in-state"],
+        "name": 0,
+        "title": node0.name,
+        "category":0
       })
-      i++;
     }
-  });
-  return done;
-}
+    return done;
+  };
 function studentFee(dataset) {
   let done = [];
-  let i = 0;
+  let i = 1;
   dataset.forEach(element => {
     if (element.type.includes("Auxiliary Comprehensive Fee Component")) {
       done.push({
-        "index": i,
+        "name": i,
         "title": element.name,
         "value": element.amount,
+        "category":i
       })
       i++;
     }
@@ -64,19 +64,20 @@ function nodesFromJMU(dataset) {
 }
 
 function linksFromJMU(dataset) {
-  const nodes = nodesFromJMU(dataset)
   let links = [];
-  nodes[0].forEach((node) => {
-    nodes[-1].forEach((inode) => {
-    links.push({
-      "source": node.index,
-      "value": node.value,
-      "target": inode.index
-    })
+  const nodes = nodesFromJMU(dataset)
+  console.log(nodes);
+  nodes.forEach(node => {
+    if (node.name !== 0) {
+      links.push({
+        "source": 0,
+        "target": node.name,
+        "value": node.value 
+      });
+    }
   });
+  console.log(links);
   return links;
-  });
-
 }
 function nodesLinksFromJMU(data) {
   // return and object with 2 keys: nodes and links
